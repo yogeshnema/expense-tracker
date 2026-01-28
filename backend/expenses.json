@@ -1,0 +1,11 @@
+{
+    "expenses": [
+        {
+            "date": "2026-01-28",
+            "amount": 100.0,
+            "category": "Food",
+            "description": "hotel bill"
+        }
+    ],
+    "budgets": {}
+}
