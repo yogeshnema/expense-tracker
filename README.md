@@ -1,100 +1,92 @@
+
 # 📊 Expense Tracker — Full Stack (FastAPI + React + SQLite)
 
-A full-stack multi-user Expense Tracker application built for academic purposes.  
-Users can register, login, record expenses with dates, set budgets per category, and view spending analytics using charts.
+![Python](https://img.shields.io/badge/backend-FastAPI-green)
+![React](https://img.shields.io/badge/frontend-React-blue)
+![Database](https://img.shields.io/badge/database-SQLite-lightgrey)
+![Auth](https://img.shields.io/badge/auth-JWT-orange)
+
+A full-stack, multi-user **Expense Tracker Web Application** built using **FastAPI + React + SQLite**.  
+Users can securely register, log in, record expenses with dates, define category budgets, and visualize spending using interactive charts.
+
+Built as an academic + portfolio project.
 
 ---
 
 # 🚀 Features
 
-- 🔐 User Registration & Login (JWT Authentication)
-- 👤 Multi-user data isolation
-- 💰 Add expenses with:
-  - Date (YYYY-MM-DD)
-  - Category
-  - Amount
-  - Description
-- 📅 Expense date tracking
-- 🗂 Category-wise budgets
-- 📈 Charts & analytics dashboard
-- 🗄 SQLite database storage
-- ⚡ FastAPI async backend
-- 🎨 React frontend with charts
+- 🔐 Secure login & registration (JWT auth)
+- 👤 Multi-user isolation
+- 💰 Add expenses with date, category, amount, description
+- 📅 Date-based tracking
+- 🗂 Category budgets
+- 📊 Budget vs Spend analytics
+- 🥧 Pie & Bar charts
+- ⚡ Async backend APIs
+- 🗄 SQLite storage
+- 🎨 Modern React UI
 
 ---
 
-# 🏗️ Architecture Overview
+# 🏗️ Architecture
 
-
-React Frontend  (Port 3000)
-        │
-        │  HTTP + JWT Token
-        ▼
-FastAPI Backend (Port 8000)
-        │
-        │  Async DB access
-        ▼
-SQLite Database (database.db)
-
+React Frontend (Port 3000)  
+↓ REST + JWT  
+FastAPI Backend (Port 8000)  
+↓ Async Queries  
+SQLite Database
 
 ---
 
-# 🖥️ Frontend Stack
+# 🧩 Tech Stack
 
+## Frontend
 - React
 - Axios
-- Recharts (Bar & Pie charts)
-- JWT token storage in localStorage
-- Form-based UI
-- Centered login screen
-- Budget + expense dashboards
+- Recharts
+- JWT storage
+- Form UI
 
-## Frontend Responsibilities
-
-- User login/register
-- Token storage
-- Expense entry forms
-- Budget forms
-- Charts rendering
-- API calls to backend
-
----
-
-# ⚙️ Backend Stack
-
+## Backend
 - FastAPI
 - SQLite
 - SQLAlchemy Core
 - Databases (async)
-- JWT Authentication
-- Passlib password hashing
-- Pydantic models
+- Passlib
+- JWT
+- Pydantic
 
-## Backend Responsibilities
+---
 
-- User authentication
-- Expense storage
-- Budget storage
-- Summary calculations
-- JWT validation
-- Multi-user separation
+# 📸 Screenshots
+
+## Login
+![Login](screenshots/login.png)
+
+## Add Expense
+![Add Expense](screenshots/add-expense.png)
+
+## Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+## Charts
+![Charts](screenshots/charts.png)
+
+## Budget Summary
+![Budget](screenshots/budget-summary.png)
 
 ---
 
 # 🗄️ Database Schema
 
-## Users Table
-
+## Users
 | Column | Type |
 |--------|--------|
 | id | Integer |
 | username | String |
 | hashed_password | String |
 
----
-
-## Expenses Table
-
+## Expenses
 | Column | Type |
 |--------|--------|
 | id | Integer |
@@ -104,10 +96,7 @@ SQLite Database (database.db)
 | amount | Float |
 | description | String |
 
----
-
-## Budgets Table
-
+## Budgets
 | Column | Type |
 |--------|--------|
 | id | Integer |
@@ -115,163 +104,85 @@ SQLite Database (database.db)
 | category | String |
 | budget | Float |
 
-Unique constraint: `(user_id, category)`
+Unique: (user_id, category)
 
 ---
 
 # 🔐 Authentication Flow
 
-1. User registers or logs in
-2. Backend verifies credentials
-3. JWT token is issued
-4. Frontend stores token
-5. Token sent in headers:
+1. Register/Login
+2. Password hashed
+3. JWT issued
+4. Token stored
+5. Sent in header:
 
-
-Authorization: Bearer <token>
-
-
-
-6. Backend validates token on each request
+Authorization: Bearer TOKEN
 
 ---
 
 # 📡 API Endpoints
 
-## Auth
-
-### Register
-
-
+## Register
 POST /register
 
-
-Body:
-
-```json
-{
-  "username": "user",
-  "password": "pass"
-}
-
-
-
-# 📸 Screenshots
-
-## 🔐 Login / Register Page
-![Login Page](screenshots/login.png)
-
----
-
-## 💰 Add Expense Form
-![Add Expense](screenshots/add-expense.png)
-
----
-
-## 📊 Dashboard — Expenses & Budgets
-![Dashboard](screenshots/dashboard.png)
-
----
-
-## 📈 Charts View
-![Charts](screenshots/charts.png)
-
----
-
-## 🗂 Budget Summary
-![Budget Summary](screenshots/budget-summary.png)
-
-
-Login
-
+## Login
 POST /login
 
-
-Returns JWT token.
-
-Expenses
-
-Add Expense
-
+## Add Expense
 POST /expenses
 
 {
-  "date": "2026-01-29",
+  "date": "YYYY-MM-DD",
   "category": "Food",
   "amount": 250,
   "description": "Lunch"
 }
 
-Get Expenses
+## Get Expenses
 GET /expenses
 
-
-Returns current user expenses.
-
-Budget
-Set Budget
+## Set Budget
 POST /budget
 
-{
-  "category": "Food",
-  "budget": 5000
-}
-
-Summary
-Category Summary
+## Summary
 GET /summary
 
+---
 
-Returns:
+# ⚙️ Setup
 
-[
-  {
-    category,
-    budget,
-    spent,
-    remaining
-  }
-]
+## Backend
 
-📊 Charts
+python -m venv venv  
+venv\Scripts\activate  
+pip install fastapi uvicorn sqlalchemy databases aiosqlite passlib argon2-cffi python-jose  
+uvicorn main:app --reload
 
-Frontend uses:
+## Frontend
 
-Pie chart — category spending
+npm install  
+npm start
 
-Bar chart — budget vs spent
+---
 
-Data source: /summary
+# 🔒 Security
 
-🌐 CORS Config
+- Argon2 hashing
+- JWT tokens
+- Per-user isolation
 
-Backend allows:
+---
 
-http://localhost:3000
+# 🚀 Future Improvements
 
+- Edit/Delete expenses
+- CSV export
+- Monthly filters
+- Admin role
+- Docker deploy
 
-Configured in FastAPI middleware.
+---
 
-🚀 Future Improvements (Suggested)
-
-Edit/Delete expenses
-
-Monthly filters
-
-Export to CSV
-
-Admin user role
-
-Password reset
-
-Cloud DB (Postgres)
-
-Docker deployment
-
-User profile page
-
-👨‍💻 Author
-
-Created for academic and learning purposes.
+# 👨‍💻 Author
 
 Yogesh Nema
