@@ -155,35 +155,36 @@ Body:
 }
 
 
+
 # 📸 Screenshots
 
 ## 🔐 Login / Register Page
 
-![Login Page](screenshots/login.png)
+!(screenshots/login.png)
 
 ---
 
 ## 💰 Add Expense Form
 
-![Add Expense](screenshots/add-expense.png)
+!(screenshots/add-expense.png)
 
 ---
 
 ## 📊 Dashboard — Expenses & Budgets
 
-![Dashboard](screenshots/dashboard.png)
+!(screenshots/dashboard.png)
 
 ---
 
 ## 📈 Charts View
 
-![Charts](screenshots/charts.png)
+!(screenshots/charts.png)
 
 ---
 
 ## 🗂 Budget Summary
 
-![Budget Summary](screenshots/budget-summary.png)
+!(screenshots/budget-summary.png)
 
 
 Login
