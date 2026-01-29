@@ -163,9 +163,40 @@ function App() {
       fontFamily: "Arial",
       background: "linear-gradient(180deg, #F9FAFB, #EEF2FF)"
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 20,
+      }}>
         <h1 style={{ color: "#4F46E5" }}>💸 Expense Manager</h1>
-        <button onClick={logout} style={{ ...buttonStyle, background: "#EF4444" }}>Logout</button>
+        <div style={{ display: "flex", gap: 10 }}>
+          {/* Export CSV */}
+          <button
+            onClick={async () => {
+              try {
+                const res = await axiosAuth.get("/export-csv", { responseType: "blob" });
+                const url = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", "expenses.csv");
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+              } catch (err) {
+                alert("Failed to export CSV. Are you logged in?");
+              }
+            }}
+            style={{ ...buttonStyle, background: "#22C55E" }}
+          >
+            ⬇ Export CSV
+          </button>
+
+          {/* Logout */}
+          <button style={{ ...buttonStyle, background: "#EF4444" }} onClick={logout}>
+            Logout
+          </button>
+        </div>
       </div>
 
       <div style={cardStyle}>

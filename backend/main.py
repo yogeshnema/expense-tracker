@@ -11,6 +11,8 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import datetime as dt
+import csv
+from fastapi.responses import FileResponse
 
 # ---------------- CONFIG ----------------
 SECRET_KEY = "your_secret_key_here"  # change in production
@@ -179,6 +181,34 @@ async def add_expense(
 async def get_expenses(current_user=Depends(get_current_user)):
     query = expenses.select().where(expenses.c.user_id == current_user["id"])
     return await database.fetch_all(query)
+
+@app.get("/export-csv")
+async def export_expenses_csv(user=Depends(get_current_user)):
+    query = expenses.select().where(expenses.c.user_id == user["id"])
+    rows = await database.fetch_all(query)
+
+    if not rows:
+        raise HTTPException(status_code=404, detail="No expenses to export")
+
+    filename = f"expenses_{user['username']}.csv"
+
+    with open(filename, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["date", "category", "amount", "description"])
+
+        for r in rows:
+            writer.writerow([
+                r["date"],
+                r["category"],
+                r["amount"],
+                r["description"]
+            ])
+
+    return FileResponse(
+        path=filename,
+        media_type="text/csv",
+        filename=filename
+    )
 
 # ---------------- BUDGETS ----------------
 @app.post("/budget")
