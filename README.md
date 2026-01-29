@@ -154,6 +154,38 @@ Body:
   "password": "pass"
 }
 
+
+# 📸 Screenshots
+
+## 🔐 Login / Register Page
+
+![Login Page](screenshots/login.png)
+
+---
+
+## 💰 Add Expense Form
+
+![Add Expense](screenshots/add-expense.png)
+
+---
+
+## 📊 Dashboard — Expenses & Budgets
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+## 📈 Charts View
+
+![Charts](screenshots/charts.png)
+
+---
+
+## 🗂 Budget Summary
+
+![Budget Summary](screenshots/budget-summary.png)
+
+
 Login
 
 POST /login
