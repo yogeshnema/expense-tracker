@@ -12,8 +12,8 @@ const COLORS = ["#6366F1", "#22C55E", "#F59E0B", "#EF4444", "#A855F7", "#06B6D4"
 const cardStyle = {
   background: "#ffffff",
   padding: 20,
-  borderRadius: 12,
-  boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+  borderRadius: 14,
+  boxShadow: "0 12px 30px rgba(0,0,0,0.08)",
   marginBottom: 25
 };
 
@@ -35,6 +35,7 @@ const buttonStyle = {
 };
 
 function App() {
+
   // ---------- AUTH ----------
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -116,6 +117,21 @@ function App() {
     loadData();
   };
 
+  // ---------- CSV EXPORT (AUTH SAFE) ----------
+  const exportCSV = async () => {
+    const res = await axios.get(API + "/export-csv", {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: "blob"
+    });
+
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "expenses.csv");
+    document.body.appendChild(link);
+    link.click();
+  };
+
   // ---------- CHART DATA ----------
   const barData = summary.map(s => ({
     category: s.category,
@@ -129,7 +145,7 @@ function App() {
     return acc;
   }, []);
 
-  // ---------- LOGIN ----------
+  // ---------- LOGIN PAGE ----------
   if (!token) {
     return (
       <div style={{
@@ -140,22 +156,53 @@ function App() {
         background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
         fontFamily: "Arial"
       }}>
-        <div style={{ ...cardStyle, width: 320 }}>
-          <h2 style={{ textAlign: "center" }}>{isRegister ? "Register" : "Login"}</h2>
-          <input style={{ ...inputStyle, width: "100%", marginBottom: 10 }} placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
-          <input style={{ ...inputStyle, width: "100%", marginBottom: 15 }} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+        <div style={{ ...cardStyle, width: 340, textAlign: "center" }}>
+
+          <img
+            src="/logo.png"
+            alt="logo"
+            style={{
+              width: "100%",
+              maxHeight: 90,
+              objectFit: "contain",
+              marginBottom: 10
+            }}
+          />
+
+          <h2>{isRegister ? "Register" : "Login"}</h2>
+
+          <input style={{ ...inputStyle, width: "100%", marginBottom: 10 }}
+            placeholder="Username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+          />
+
+          <input style={{ ...inputStyle, width: "100%", marginBottom: 15 }}
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+
           <button style={{ ...buttonStyle, width: "100%" }} onClick={handleRegisterLogin}>
             {isRegister ? "Register" : "Login"}
           </button>
-          <p style={{ textAlign: "center", marginTop: 15, color: "#6366F1", cursor: "pointer" }} onClick={() => setIsRegister(!isRegister)}>
+
+          <p style={{ marginTop: 15, color: "#6366F1", cursor: "pointer" }}
+            onClick={() => setIsRegister(!isRegister)}>
             {isRegister ? "Already have an account?" : "Create new account"}
           </p>
+
+          <div style={{ marginTop: 20, fontSize: 12, opacity: 0.8 }}>
+            This project was created for Academic purposes by Yogesh Nema
+          </div>
+
         </div>
       </div>
     );
   }
 
-  // ---------- MAIN ----------
+  // ---------- MAIN PAGE ----------
   return (
     <div style={{
       minHeight: "100vh",
@@ -163,42 +210,25 @@ function App() {
       fontFamily: "Arial",
       background: "linear-gradient(180deg, #F9FAFB, #EEF2FF)"
     }}>
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 20,
-      }}>
-        <h1 style={{ color: "#4F46E5" }}>💸 Expense Manager</h1>
+
+      {/* HEADER */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <img src="/logo.png" alt="logo" style={{ height: 50 }} />
+          <h1 style={{ color: "#4F46E5", margin: 0 }}>💸 Expense Manager</h1>
+        </div>
+
         <div style={{ display: "flex", gap: 10 }}>
-          {/* Export CSV */}
-          <button
-            onClick={async () => {
-              try {
-                const res = await axiosAuth.get("/export-csv", { responseType: "blob" });
-                const url = window.URL.createObjectURL(new Blob([res.data]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", "expenses.csv");
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-              } catch (err) {
-                alert("Failed to export CSV. Are you logged in?");
-              }
-            }}
-            style={{ ...buttonStyle, background: "#22C55E" }}
-          >
+          <button onClick={exportCSV} style={{ ...buttonStyle, background: "#22C55E" }}>
             ⬇ Export CSV
           </button>
-
-          {/* Logout */}
-          <button style={{ ...buttonStyle, background: "#EF4444" }} onClick={logout}>
+          <button onClick={logout} style={{ ...buttonStyle, background: "#EF4444" }}>
             Logout
           </button>
         </div>
       </div>
 
+      {/* ADD EXPENSE */}
       <div style={cardStyle}>
         <h3>➕ Add Expense</h3>
         <input type="date" style={inputStyle} value={date} onChange={e => setDate(e.target.value)} />
@@ -208,6 +238,7 @@ function App() {
         <button style={buttonStyle} onClick={addExpense}>Add</button>
       </div>
 
+      {/* BUDGET */}
       <div style={cardStyle}>
         <h3>🎯 Set Budget</h3>
         <input style={inputStyle} placeholder="Category" value={budgetCategory} onChange={e => setBudgetCategory(e.target.value)} />
@@ -215,6 +246,7 @@ function App() {
         <button style={buttonStyle} onClick={addBudget}>Save</button>
       </div>
 
+      {/* EXPENSE LIST */}
       <div style={cardStyle}>
         <h3>📋 Expenses</h3>
         <ul>
@@ -226,6 +258,7 @@ function App() {
         </ul>
       </div>
 
+      {/* BAR CHART */}
       <div style={cardStyle}>
         <h3>📊 Budget vs Spending</h3>
         <BarChart width={600} height={300} data={barData}>
@@ -239,6 +272,7 @@ function App() {
         </BarChart>
       </div>
 
+      {/* PIE CHART */}
       <div style={cardStyle}>
         <h3>🍰 Expense Distribution</h3>
         <PieChart width={400} height={300}>
@@ -250,6 +284,12 @@ function App() {
           <Tooltip />
         </PieChart>
       </div>
+
+      {/* FOOTER NOTE */}
+      <div style={{ textAlign: "center", marginTop: 30, opacity: 0.75 }}>
+        This project was created for Academic purposes by Yogesh Nema
+      </div>
+
     </div>
   );
 }
